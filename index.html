@@ -29,7 +29,15 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: document.querySelector("#message").value }),
       });
-      result.textContent = JSON.stringify(await reply.json(), null, 2);
+      const data = await reply.json();
+      result.textContent = "";
+      if (data.status === "ready") {
+        result.textContent = `Тема: ${data.topic}\nЧерновик ответа:\n${data.draft}`;
+      } else if (data.status === "manual_review") {
+        result.textContent = "Требуется ручная проверка менеджером. Черновик не подготовлен.";
+      } else {
+        result.textContent = `Ошибка: ${data.status ?? "неизвестный ответ сервера"}`;
+      }
     });
   </script>
 </body>
